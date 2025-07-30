@@ -7,6 +7,32 @@
   <!-- ONE good CSS include -->
   <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/webslides@1.5.0/static/css/webslides.css">
+  <!-- Custom styles for dark theme and larger text -->
+  <style>
+    /* Dark background and light gray text, with overall larger font sizing */
+    html {
+      font-size: 1.2rem;
+    }
+    body {
+      background-color: #000;
+      color: #ccc;
+    }
+    /* Ensure slide backgrounds inherit dark theme */
+    #webslides section {
+      background-color: #000;
+    }
+    /* Heading sizes */
+    h1 {
+      font-size: 2.5rem;
+    }
+    h2 {
+      font-size: 2rem;
+    }
+    /* Paragraphs and list items */
+    p, li {
+      font-size: 1.2rem;
+    }
+  </style>
 </head>
 <body>
 
@@ -14,7 +40,18 @@
   <article id="webslides">
     <section>
       <h1>Malpositioned&nbsp;Urinary&nbsp;Catheters</h1>
-      <p>Daniel Mason DO</p>
+      <p>Dan&nbsp;Mason&nbsp;DO</p>
+    </section>
+
+        <section>
+      <h2>Foley Catheters</h2>
+      <ul>
+        <li>Indications:<li>
+          <ul> 
+            <li>Urinary retention</li>
+            <li>Strict input/output</li>
+          </ul>
+      </ul>
     </section>
 
     <section>
@@ -31,6 +68,8 @@
         <li>Check urethral route on CT scout.</li>
       </ul>
     </section>
+
+    
   </article>
 
   <!-- ONE good JS include, then initialise -->
