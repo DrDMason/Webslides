@@ -9,65 +9,410 @@
         href="https://cdn.jsdelivr.net/npm/webslides@1.5.0/static/css/webslides.css">
   <!-- Custom styles for dark theme and larger text -->
   <style>
-    /* Dark background and light gray text, with overall larger font sizing */
-    html {
-      font-size: 1.2rem;
+    /* Solarized Dark theme + Arial font */
+    :root {
+      --base03: #002b36; /* background */
+      --base02: #073642; /* panels / rules */
+      --base01: #586e75;
+      --base00: #657b83;
+      --base0:  #839496; /* primary body text */
+      --base1:  #93a1a1; /* secondary text */
+      --base2:  #eee8d5;
+      --base3:  #fdf6e3;
+      --yellow: #b58900; /* optional emphasis */
+      --orange: #cb4b16; /* level 3 bullets */
+      --red:    #dc322f;
+      --magenta:#d33682; /* optional emphasis */
+      --violet: #6c71c4; /* level 4 bullets */
+      --blue:   #268bd2; /* links + level 1 bullets */
+      --cyan:   #2aa198; /* level 5 bullets */
+      --green:  #859900; /* level 2 bullets */
+      --font-stack: Arial, Helvetica, sans-serif;
+  --panel-bg: rgba(7,54,66,0.38);
+  --panel-bg-hover: rgba(7,54,66,0.55);
+  --panel-border: var(--blue);
     }
+  /* Increased global font sizing for readability (bumped) */
+  html { font-size: 1.8rem; }
     body {
-      background-color: #000;
-      color: #ccc;
+      background: var(--base03);
+      color: var(--base0);
+      font-family: var(--font-stack);
+      -webkit-font-smoothing: antialiased;
     }
-    /* Ensure slide backgrounds inherit dark theme */
-    #webslides section {
-      background-color: #000;
+    #webslides section { background: var(--base03); }
+    /* Typography */
+    h1, h2, h3, h4 { font-family: var(--font-stack); font-weight: 600; line-height: 1.15; }
+  h1 { font-size: 4.8rem; color: var(--blue); }
+  h2 { font-size: 3.2rem; color: var(--blue); }
+  p, li { font-size: 1.8rem; line-height: 1.28; }
+    .secondary { color: var(--base1); }
+    /* Links */
+    a { color: var(--blue); text-decoration: none; }
+    a:hover, a:focus { text-decoration: underline; }
+  /* Bullet hierarchy coloring: first level orange emphasis, second level gray, deeper slightly darker grays */
+  #webslides ul > li { color: var(--cyan); }
+  #webslides ul ul > li { color: var(--base1); }
+  /* Slightly smaller font for second-tier list items */
+  #webslides ul ul > li { font-size: 1.6rem; }
+  #webslides ul ul ul > li { color: var(--base0); }
+  #webslides ul ul ul ul > li { color: var(--base00); }
+  #webslides ul ul ul ul ul > li { color: var(--base01); }
+    /* Optional emphasis helpers */
+    .em-yellow { color: var(--yellow); }
+    .em-magenta { color: var(--magenta); }
+    /* Rule / box panels */
+    /* Remove generic panel coloring (neutralize) */
+    .box, .panel, blockquote, pre {
+      background: none;
+      border: none;
+      box-shadow: none;
+      padding: 0;
     }
-    /* Heading sizes */
-    h1 {
-      font-size: 2.5rem;
+    hr { border: 0; height: 1px; background: var(--base02); margin: 2rem 0; }
+    /* Full-screen iframe slide helper */
+    #webslides section.full-iframe { position: relative; padding: 0; }
+    #webslides section.full-iframe iframe {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
     }
-    h2 {
-      font-size: 2rem;
+    #webslides section.full-iframe h2 { position: absolute; z-index: 2; top: 1rem; left: 1.5rem; margin: 0; background: rgba(0,43,54,.65); padding: .4rem .8rem; border-radius: .3rem; }
+  /* Fallback link styling when iframe blocked */
+  .full-iframe .fallback-link { position:absolute; inset:0; display:none; align-items:center; justify-content:center; text-align:center; padding:2rem; background:rgba(0,43,54,0.85); }
+  .full-iframe .fallback-link.show { display:flex; }
+  .full-iframe .fallback-link a { font-size:2.4rem; color: var(--cyan); text-decoration: underline; }
+    /* Improve contrast for lists on dark background */
+    ul { list-style-position: outside; }
+    /* Adjust slide inner padding if desired (WebSlides default is fine) */
+    /* .wrap { max-width: 1200px; } */
+
+    /* Removed all panel styling from list items */
+    #webslides section ul li {
+      background: none !important;
+      border: none !important;
+      padding: .1rem 0 .1rem 0; /* tighter vertical rhythm */
+      margin: .05rem 0;
+      box-shadow: none !important;
     }
-    /* Paragraphs and list items */
-    p, li {
-      font-size: 1.2rem;
+  /* Restore natural marker colors (inherit from li color for hierarchy) */
+  /* Removed previous universal ::marker override */
+  /* Indentation for nested lists to visibly show hierarchy */
+  /* Increased indentation for clearer hierarchy */
+  #webslides ul { margin-left: 3.0rem; }
+  #webslides ul ul { margin-left: 4.6rem; }
+  #webslides ul ul ul { margin-left: 6.2rem; }
+  #webslides ul ul ul ul { margin-left: 7.8rem; }
+  #webslides ul ul ul ul ul { margin-left: 9.4rem; }
+  /* Indent body paragraphs similarly */
+  #webslides p { margin-left: 1.2rem; margin-top: .2rem; margin-bottom: .4rem; }
+    /* Top align slide content (exclude full-iframe) */
+    #webslides section:not(.full-iframe) {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 2rem 2.4rem; /* reduced inner margins */
+      box-sizing: border-box;
     }
+    #webslides section:not(.full-iframe) h1,
+    #webslides section:not(.full-iframe) h2 { margin-top: 0; }
+    /* Intro (first) slide centered */
+    #webslides section.intro-center {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 2.4rem; /* match reduced horizontal padding */
+    }
+  /* Two-column helper for slides */
+  .two-col { display: flex; align-items: flex-start; gap: 1.8rem; }
+  .two-col .col-text { flex: 1 1 55%; }
+  .two-col img { flex: 0 0 40%; max-width: 40%; height: auto; border: 2px solid var(--base01); border-radius: .4rem; }
+  @media (max-width: 1100px) { .two-col { flex-direction: column; } .two-col img { max-width: 60%; } }
+  @media (max-width: 700px) { .two-col img { max-width: 100%; } }
+  /* Image-fit slide: keep large image fully visible under heading */
+  #webslides section.image-fit { display:flex; flex-direction:column; align-items:center; padding:1rem 2.4rem; }
+  #webslides section.image-fit h2 { margin:0 0 .6rem 0; }
+  #webslides section.image-fit img { max-width:100%; max-height:calc(100vh - 5.2rem); height:auto; width:auto; object-fit:contain; }
+  /* Variant: allow heading overlay so image uses almost full height */
+  #webslides section.image-fit.fullscreen h2 { position:absolute; top:1rem; left:1.5rem; background:rgba(0,43,54,.55); padding:.4rem .8rem; border-radius:.35rem; margin:0; }
+  #webslides section.image-fit.fullscreen { position:relative; padding:0; }
+  #webslides section.image-fit.fullscreen img { max-height:calc(100vh - 1.5rem); max-width:96vw; }
+  /* New: fill slide window exactly without overflow */
+  #webslides section.image-cover { position:relative; padding:8vh 0 2vh 0; margin:0; display:flex; align-items:center; justify-content:center; height:100vh; box-sizing:border-box; }
+  #webslides section.image-cover h2 { position:absolute; top:2rem; left:1.5rem; background:rgba(0,43,54,.75); padding:.4rem .8rem; border-radius:.35rem; margin:0; z-index:2; }
+  #webslides section.image-cover img { width:92vw; height:80vh; object-fit:contain; }
+    /* Tighten heading spacing */
+    #webslides h1 { margin: 0 0 .6rem 0; }
+    #webslides h2 { margin: .2rem 0 .5rem 0; }
+    /* Compact list group spacing */
+    #webslides ul { margin-top: .2rem; margin-bottom: .4rem; }
+    /* Red dot cursor that appears while moving and hides when idle */
+    body.hide-system-cursor { cursor: none; }
+    #cursor-dot {
+      position: fixed;
+      top: 0; left: 0;
+      width: 22px; height: 22px; /* larger core dot */
+      margin: 0; padding: 0;
+      background: #ff2b2b; /* solid red center */
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity .25s ease-out, transform .08s ease-out;
+      z-index: 9999;
+      box-shadow: 0 0 10px 4px rgba(255,43,43,0.55), 0 0 28px 4px rgba(255,43,43,0.35);
+    }
+    #cursor-dot::after { /* expanding pulse ring */
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 100%; height: 100%;
+      background: rgba(255,43,43,0.5);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0;
+      pointer-events: none;
+    }
+    #cursor-dot.active { opacity: 1; }
+    #cursor-dot.active::after { animation: cursorPulse .8s ease-out; }
+    @keyframes cursorPulse {
+      0% { opacity: .6; transform: translate(-50%, -50%) scale(1); }
+      60% { opacity: .15; transform: translate(-50%, -50%) scale(3); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(3.6); }
+    }
+    /* Position WebSlides navigation arrows bottom-right instead of centered */
+    #navigation { left: auto !important; right: 1.2rem !important; bottom: 1.2rem !important; width: auto !important; margin: 0 !important; display:flex; align-items:center; gap:.8rem; padding:0; }
+    #navigation #counter { order: 3; margin:0 .4rem 0 0; line-height: 1; font-size:1.4rem; }
+    #navigation a#previous, #navigation a#next { position:static; margin:0; }
+    /* Smaller arrow buttons */
+    #navigation a#previous, #navigation a#next { width:3.2rem; height:3.2rem; line-height:3.2rem; font-size:2rem; background:rgba(0,43,54,.55); }
+    #navigation a#previous:hover, #navigation a#next:hover { background:rgba(0,43,54,.8); }
   </style>
 </head>
 <body>
 
   <!-- This ID is essential -->
   <article id="webslides">
-    <section>
+  <section class="intro-center">
       <h1>Malpositioned&nbsp;Urinary&nbsp;Catheters</h1>
-      <p>Dan&nbsp;Mason&nbsp;DO</p>
+      <p>Dan&nbsp;Mason,&nbsp;DO</p>
     </section>
 
         <section>
       <h2>Foley Catheters</h2>
-        <li>Indications: urinary retention, strict input/output</li>
-    </section>
-
-    <section>
-      <h2>Case overview</h2>
-      <iframe
-        src="https://radiopaedia.org/cases/d4502c5ba1c7ee00a3c81ed034b8df07/play"
-        width="100%" height="640" allowfullscreen></iframe>
-    </section>
-
-    <section>
-      <h2>Pearls and pitfalls</h2>
       <ul>
-        <li>Look for balloon beyond the bladder dome.</li>
-        <li>Check urethral route on CT scout.</li>
+        <li>Indications:
+          <ul>
+        <li>Urinary retention</li>
+        <li>Strict input/output</li>
+          </ul>
+        </li>
+        <li>Radiology:
+          <ul>
+        <li>Look for the balloon completely beyond the bladder neck.</li>
+          </ul>
+        </li>
       </ul>
     </section>
 
+    <section class="full-iframe">
+      <h2>Malpositioned Foley Catheter</h2>
+      <iframe
+        src="https://radiopaedia.org/cases/d4502c5ba1c7ee00a3c81ed034b8df07/play"
+        allowfullscreen></iframe>
+        <div class="fallback-link" aria-live="polite">
+          <p style="margin:0 0 1rem 0; font-size:1.8rem;">Embedded case blocked. Open it directly:</p>
+          <p style="margin:0;"><a target="_blank" rel="noopener noreferrer" href="https://radiopaedia.org/cases/d4502c5ba1c7ee00a3c81ed034b8df07">Radiopaedia Case Link</a></p>
+        </div>
+    </section>
+
+    <section class="full-iframe">
+      <h2>Malpositioned Foley Catheter </section>/h2>
+      <iframe
+        src="https://radiopaedia.org/cases/55346/studies/61768?new_full_screen_viewer=true"
+        allowfullscreen></iframe>
+    </section>
+
+    <section>
+      <h2>Suprapubic Catheter</h2>
+      <ul>
+        <li>Indication:</li>
+        <li>Types:</li>
+        <li>Complications:</li>
+        <li>Radiology:</li>
+        <li>Extra:</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Nephrostomy Tubes</h2>
+      <ul>
+        <li>Indication:</li>
+        <li>Types:</li>
+        <li>Complications:</li>
+        <li>Radiology:</li>
+        <li>Extra:</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Urolift Procedure</h2>
+      <ul>
+        <li>Indication:</li>
+        <li>Types:</li>
+        <li>Complications:</li>
+        <li>Radiology:</li>
+        <li>Extra:</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Uretheral Stent</h2>
+      <div class="two-col">
+        <div class="col-text">
+          <ul>
+            <li>Indication:
+              <ul>
+                <li>Treat difficult/recurrent urethral strictures</li>
+              </ul>
+            </li>
+            <li>Types:</li>
+            <li>Complications:
+              <ul>
+                <li>Infection</li>
+                <li>Dislodgment</li>
+                <li>Encrustation</li>
+              </ul>
+            </li>
+            <li>Radiology:</li>
+            <li>Extra:
+              <ul>
+                <li>Permanent</li>
+                <li>Removed/changed after 3-6 months</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <img src="images/insertion-of-urethral-stent-1.jpg" alt="Insertion of urethral stent" />
+      </div>
+    </section>
+    <section>
+      <h2>Artificial Urethral Sphincter</h2>
+      <div class="two-col">
+        <div class="col-text">
+          <ul>
+            <li>Indication:
+              <ul>
+                <li>Stress incontinence</li>
+              </ul>
+            </li>
+            <li>Components:
+              <ul>
+                <li>Urethral cuff: bladder neck/proximal urethra</li>
+                <li>Fluid balloon reservoir: placed under abdominal muscle</li>
+                <li>Pump: Under skin of lower abdomen, leg or scrotum</li>
+                <li>Connecting Tubes</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <img src="images/urinary_sphincter_fig.png" alt="Artificial urethral sphincter components" />
+      </div>
+    </section>
+
+
+
+    <section>
+      <h2>Artificial Urethral Sphincter (cont.)</h2>
+      <ul>
+      <li>Types:</li>
+      <li>Complications:
+        <ul>
+        <li>Leakage of the tubes or reservoir</li>
+        <li>Migration of the fluid balloon reservoir</li>
+        </ul>
+      </li>
+      <li>Radiology:</li>
+      <li>Extra:</li>
+      </ul>
+    </section>
+
+     <section class="image-cover">
+      <h2>Historic Urethral Sphincters</h2>
+        <img src="images/American-Medical-System-artificial-urinary-sphincters-history.png" alt="Historic artificial urinary sphincters timeline" />
+    </section>
+
+    <section class="image-cover">
+      <h2>Surgical Technique</h2>
+      <img src="images/surg_artifical_urethral_stent.png" alt="Surgical artificial urethral stent" />
+    </section>
+
+    <section class="image-cover">
+      <h2>Surgical Technique</h2>
+      <img src="images/artificial_urethral_stent_scanogram.jpg"/>
+    </section>
+
+    <section class="image-cover">
+      <img src="images/artificial-urethral-sphincter.jpg"/>
+    </section>
+
+    <section class="image-cover">
+      <img src="images/artificial-urethral-sphincter-ct2.jpg"/>
+    </section>  
+
+    <section>
+      <h1>Thank You</h1>
+      <p>We appreciate your attention!</p>
+    </section>
     
   </article>
 
+
   <!-- ONE good JS include, then initialise -->
   <script src="https://cdn.jsdelivr.net/npm/webslides@1.5.0/static/js/webslides.min.js"></script>
-  <script>window.ws = new WebSlides();</script>
+  <div id="cursor-dot" aria-hidden="true"></div>
+  <script>
+    window.ws = new WebSlides();
+    (function(){
+      const dot = document.getElementById('cursor-dot');
+      let idleTimer = null;
+  const IDLE_DELAY = 350; // ms until hide (reduced for quicker disappearance)
+      // Hide native cursor
+      document.body.classList.add('hide-system-cursor');
+      function activateDot(){
+        dot.classList.add('active');
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(()=> dot.classList.remove('active'), IDLE_DELAY);
+      }
+      window.addEventListener('mousemove', e => {
+        dot.style.top = e.clientY + 'px';
+        dot.style.left = e.clientX + 'px';
+        // Slight grow on move
+        dot.style.transform = 'translate(-50%, -50%) scale(1.0)';
+        activateDot();
+      }, { passive: true });
+      window.addEventListener('mousedown', () => {
+        dot.style.transform = 'translate(-50%, -50%) scale(0.7)';
+        activateDot();
+      });
+      window.addEventListener('mouseup', () => {
+        dot.style.transform = 'translate(-50%, -50%) scale(1.0)';
+        activateDot();
+      });
+      window.addEventListener('keydown', activateDot, { passive: true });
+    })();
+    // Fallback for blocked iframe (e.g., X-Frame-Options SAMEORIGIN)
+    (function(){
+      const frame = document.querySelector('section.full-iframe iframe');
+      if(!frame) return;
+      let loaded = false;
+      frame.addEventListener('load', ()=> { loaded = true; });
+      // After timeout, if not loaded, show fallback link and hide iframe
+      setTimeout(()=> {
+        if(!loaded) {
+          const fb = document.querySelector('.full-iframe .fallback-link');
+            if(fb) {
+              fb.classList.add('show');
+              frame.style.display='none';
+            }
+        }
+      }, 2000); // 2s grace period
+    })();
+  </script>
 </body>
 </html>
